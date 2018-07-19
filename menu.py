@@ -20,7 +20,7 @@ class Menu(object):
         # below: find one blog that has the author as the user (which was entered)
         blog = Database.find_one('blogs', {'author': self.user}) is not None
         if blog is not None:
-            self.user_blog = blog
+            self.user_blog = Blog.from_mongo(blog['id'])
             return True
         else:
             return False
@@ -40,11 +40,25 @@ class Menu(object):
 
         if read_or_write == 'R':
             # list blogs in database
+            self._list_blogs()
+            self._view_blog()
             # allow user to pick one
             # display posts
             pass
         elif read_or_write == 'W':
-            # prompt to create new blog
+            self.user_blog.new_post()
             pass
         else:
             print("Thank you for blogging!")
+
+    def _list_blogs(self):
+        blogs = Database.find(collection='blogs', query={})
+        for blog in blogs:
+            print("ID: {}, Title: {}, Author: {}".format(blog['id'], blog['title'], blog['author']))
+
+    def _view_blog(self):
+        blog_to_see = input("Enter the ID of the blog you'd like to read: ")
+        blog = Blog.from_mongo(blog_to_see)
+        posts = blog.get_posts()
+        for post in posts:
+            print("Date: {}, title: {}\n\n{}". format(post['create_date'], post['title'], post['content']))
