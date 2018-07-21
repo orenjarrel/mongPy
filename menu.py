@@ -18,7 +18,7 @@ class Menu(object):
     def _user_has_account(self):
         # check to see if there is a blog with this author name
         # below: find one blog that has the author as the user (which was entered)
-        blog = Database.find_one('blogs', {'author': self.user}) is not None
+        blog = Database.find_one('blogs', {'author': self.user}) ## is not None
         if blog is not None:
             self.user_blog = Blog.from_mongo(blog['id'])
             return True
@@ -61,4 +61,4 @@ class Menu(object):
         blog = Blog.from_mongo(blog_to_see)
         posts = blog.get_posts()
         for post in posts:
-            print("Date: {}, title: {}\n\n{}". format(post['create_date'], post['title'], post['content']))
+            print("Date: {}, title: {}\n\n{}".format(post['created_date'], post['title'], post['content']))
